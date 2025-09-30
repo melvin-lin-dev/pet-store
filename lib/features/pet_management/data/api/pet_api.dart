@@ -15,7 +15,18 @@ class PetApi {
     return data.map((json) => PetModel.fromJson(json)).toList();
   }
 
+  Future<PetModel> getPet(String id) async {
+    final response = await dio.get('/pet/$id');
+    return PetModel.fromJson(response.data);
+  }
+
   Future<dynamic> createPet(payload) async {
-    return await dio.post('/pet', data: payload);
+    final response = await dio.post('/pet', data: payload);
+    return response;
+  }
+
+  Future<dynamic> updatePet(payload, String id) async {
+    final response = await dio.post('/pet', data: payload);
+    return response;
   }
 }

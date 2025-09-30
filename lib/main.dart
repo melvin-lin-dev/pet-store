@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         path: '/edit/:id',
         builder: (context, state) {
           final id = state.pathParameters['id'] as String;
-          return PetEditPage(id: int.parse(id));
+          return PetEditPage(repository: petRepository, id: id);
         },
       ),
     ],
