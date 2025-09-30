@@ -67,4 +67,9 @@ class PetRepository {
     await api.updatePet(formattedPayload, id);
     return {'message': 'Pet Updated Successfully'};
   }
+
+  Future<dynamic> deletePet(String id) async {
+    await api.deletePet(id);
+    return {'message': 'Pet Deleted Successfully'};
+  }
 }

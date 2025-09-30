@@ -20,13 +20,23 @@ class PetApi {
     return PetModel.fromJson(response.data);
   }
 
-  Future<dynamic> createPet(payload) async {
+  Future<Response> createPet(payload) async {
     final response = await dio.post('/pet', data: payload);
     return response;
   }
 
-  Future<dynamic> updatePet(payload, String id) async {
+  Future<Response> updatePet(payload, String id) async {
     final response = await dio.post('/pet', data: payload);
+    return response;
+  }
+
+  Future<Response> deletePet(String id) async {
+    final response = await dio.delete(
+      '/pet/$id',
+      options: Options(
+        responseType: ResponseType.plain, // treat response as plain text
+      ),
+    );
     return response;
   }
 }
