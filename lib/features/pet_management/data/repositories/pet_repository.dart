@@ -22,4 +22,20 @@ class PetRepository {
 
     return entities;
   }
+
+  Future<dynamic> createPet(Pet payload) async {
+    final formattedPayload = {
+      'id': payload.id,
+      'name': payload.name,
+      'category': {'id': 123, 'name': payload.category},
+      'tags': payload.tags
+          .asMap()
+          .entries
+          .map((entry) => {'id': entry.key + 1, 'name': entry.value})
+          .toList(),
+      'status': payload.status,
+    };
+    await api.createPet(formattedPayload);
+    return {'message': 'Pet Created Successfully'};
+  }
 }

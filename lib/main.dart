@@ -28,7 +28,10 @@ class MyApp extends StatelessWidget {
         path: '/',
         builder: (context, state) => PetListPage(repository: petRepository),
       ),
-      GoRoute(path: '/create', builder: (context, state) => PetCreatePage()),
+      GoRoute(
+        path: '/create',
+        builder: (context, state) => PetCreatePage(repository: petRepository),
+      ),
       GoRoute(
         path: '/edit/:id',
         builder: (context, state) {

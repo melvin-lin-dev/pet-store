@@ -7,8 +7,15 @@ class PetApi {
   PetApi({required this.dio});
 
   Future<List<PetModel>> getPets() async {
-    final response = await dio.get('/pet/findByStatus', queryParameters: {'status': 'available'});
+    final response = await dio.get(
+      '/pet/findByStatus',
+      queryParameters: {'status': 'available'},
+    );
     final List data = response.data;
     return data.map((json) => PetModel.fromJson(json)).toList();
+  }
+
+  Future<dynamic> createPet(payload) async {
+    return await dio.post('/pet', data: payload);
   }
 }
