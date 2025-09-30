@@ -8,6 +8,7 @@ class PetListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List pets = [
       {
+        "id": 1,
         "name": "Pet 1",
         "category": {"id": 1, "name": "Dogs"},
         "tags": [
@@ -61,7 +62,7 @@ class PetListPage extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () {
-                            print('edit');
+                            context.go('/edit/${pet['id']}');
                           },
                           icon: Icon(Icons.edit, color: Colors.yellow),
                           tooltip: 'Edit',
