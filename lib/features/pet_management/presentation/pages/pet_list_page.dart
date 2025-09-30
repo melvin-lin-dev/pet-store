@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PetListPage extends StatelessWidget {
   const PetListPage({Key? key}) : super(key: key);
@@ -17,7 +18,20 @@ class PetListPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Pet List')),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Pet List'),
+            IconButton(
+              onPressed: () {
+                context.go('/create');
+              },
+              icon: Icon(Icons.add, color: Colors.blue),
+            ),
+          ],
+        ),
+      ),
       body: DataTable(
         columns: const [
           DataColumn(label: Text('Name')),
