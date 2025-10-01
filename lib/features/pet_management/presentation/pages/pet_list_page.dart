@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_store/features/pet_management/data/repositories/pet_repository.dart';
 import 'package:pet_store/features/pet_management/domain/entities/pet.dart';
+import 'package:pet_store/features/pet_management/presentation/widgets/pet_data_source.dart';
 
 class PetListPage extends StatefulWidget {
   final PetRepository repository;
@@ -83,71 +84,64 @@ class _PetListPageState extends State<PetListPage> {
             ? CircularProgressIndicator()
             : pets.isEmpty
             ? Text('No pets available')
-            : DataTable(
-                columns: const [
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Category')),
-                  DataColumn(label: Text('Tags')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Action')),
-                ],
-                rows: pets
-                    .map(
-                      (pet) => DataRow(
-                        cells: [
-                          DataCell(Text(pet.name)),
-                          DataCell(Text(pet.category)),
-                          DataCell(
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              children: pet.tags
-                                  .map((tag) => Text(tag))
-                                  .toList(),
-                            ),
-                          ),
-                          DataCell(Text(pet.status)),
-                          DataCell(
-                            Row(
-                              children: kIsWeb
-                                  ? [
-                                      IconButton(
-                                        onPressed: () {
-                                          context.go('/edit/${pet.id}');
-                                        },
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: Colors.yellow,
-                                        ),
-                                        tooltip: 'Edit',
-                                      ),
-                                      IconButton(
-                                        onPressed: () => deletePet(pet),
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                        ),
-                                        tooltip: 'Delete',
-                                      ),
-                                    ]
-                                  : [
-                                      IconButton(
-                                        onPressed: () {
-                                          context.go('/purchase/${pet.id}');
-                                        },
-                                        icon: Icon(
-                                          Icons.shopping_cart,
-                                          color: Colors.green,
-                                        ),
-                                        tooltip: 'Purchase',
-                                      ),
-                                    ],
+            : !kIsWeb
+            ? SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: PaginatedDataTable(
+                  columns: const [
+                    DataColumn(label: Text('Name')),
+                    DataColumn(label: Text('Category')),
+                    DataColumn(label: Text('Tags')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Action')),
+                  ],
+                  source: PetDataSource(
+                    pets: pets,
+                    context: context,
+                    deletePet: deletePet,
+                  ),
+                  rowsPerPage: 10,
+                ),
+              )
+            : GridView.builder(
+                padding: const EdgeInsets.all(12),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: pets.length,
+                itemBuilder: (context, index) {
+                  final pet = pets[index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        context.go('/purchase/${pet.id}');
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.pets, size: 48, color: Colors.teal),
+                          const SizedBox(height: 12),
+                          Text(
+                            "Pet: ${pet.name}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                    )
-                    .toList(),
+                    ),
+                  );
+                },
               ),
       ),
     );
