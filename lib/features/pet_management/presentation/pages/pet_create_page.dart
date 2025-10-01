@@ -6,7 +6,7 @@ import 'package:pet_store/features/pet_management/presentation/widgets/pet_form.
 class PetCreatePage extends StatelessWidget {
   final PetRepository repository;
 
-  const PetCreatePage({Key? key, required this.repository}) : super(key: key);
+  const PetCreatePage({super.key, required this.repository});
 
   @override
   Widget build(BuildContext context) {

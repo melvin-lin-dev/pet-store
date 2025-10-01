@@ -6,6 +6,7 @@ import 'package:pet_store/features/pet_management/data/repositories/pet_reposito
 import 'package:pet_store/features/pet_management/presentation/pages/pet_create_page.dart';
 import 'package:pet_store/features/pet_management/presentation/pages/pet_edit_page.dart';
 import 'package:pet_store/features/pet_management/presentation/pages/pet_list_page.dart';
+import 'package:pet_store/features/pet_management/presentation/pages/pet_purchase_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +38,13 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           final id = state.pathParameters['id'] as String;
           return PetEditPage(repository: petRepository, id: id);
+        },
+      ),
+      GoRoute(
+        path: '/purchase/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] as String;
+          return PetPurchaseList(repository: petRepository, id: id);
         },
       ),
     ],

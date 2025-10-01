@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_store/features/pet_management/data/repositories/pet_repository.dart';
@@ -6,10 +7,10 @@ import 'package:pet_store/features/pet_management/domain/entities/pet.dart';
 class PetListPage extends StatefulWidget {
   final PetRepository repository;
 
-  const PetListPage({Key? key, required this.repository}) : super(key: key);
+  const PetListPage({super.key, required this.repository});
 
   @override
-  _PetListPageState createState() => _PetListPageState();
+  State<PetListPage> createState() => _PetListPageState();
 }
 
 class _PetListPageState extends State<PetListPage> {
@@ -37,11 +38,27 @@ class _PetListPageState extends State<PetListPage> {
   }
 
   void fetchPets() async {
-    final data = await widget.repository.fetchPets();
-    setState(() {
-      pets = data;
-      isLoading = false;
-    });
+    setState(() => isLoading = true);
+
+    try {
+      final data = await widget.repository.fetchPets();
+
+      if (!mounted) return;
+
+      setState(() {
+        pets = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      print(e);
+
+      if (!mounted) return;
+
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to fetch pets: $e')));
+    }
   }
 
   @override
@@ -81,9 +98,9 @@ class _PetListPageState extends State<PetListPage> {
                           DataCell(Text(pet.name)),
                           DataCell(Text(pet.category)),
                           DataCell(
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
                               children: pet.tags
                                   .map((tag) => Text(tag))
                                   .toList(),
@@ -92,20 +109,39 @@ class _PetListPageState extends State<PetListPage> {
                           DataCell(Text(pet.status)),
                           DataCell(
                             Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    context.go('/edit/${pet.id}');
-                                  },
-                                  icon: Icon(Icons.edit, color: Colors.yellow),
-                                  tooltip: 'Edit',
-                                ),
-                                IconButton(
-                                  onPressed: () => deletePet(pet),
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  tooltip: 'Delete',
-                                ),
-                              ],
+                              children: !kIsWeb
+                                  ? [
+                                      IconButton(
+                                        onPressed: () {
+                                          context.go('/edit/${pet.id}');
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Colors.yellow,
+                                        ),
+                                        tooltip: 'Edit',
+                                      ),
+                                      IconButton(
+                                        onPressed: () => deletePet(pet),
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        tooltip: 'Delete',
+                                      ),
+                                    ]
+                                  : [
+                                      IconButton(
+                                        onPressed: () {
+                                          context.go('/purchase/${pet.id}');
+                                        },
+                                        icon: Icon(
+                                          Icons.shopping_cart,
+                                          color: Colors.green,
+                                        ),
+                                        tooltip: 'Purchase',
+                                      ),
+                                    ],
                             ),
                           ),
                         ],
