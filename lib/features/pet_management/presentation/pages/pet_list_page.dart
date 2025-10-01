@@ -109,7 +109,7 @@ class _PetListPageState extends State<PetListPage> {
                           DataCell(Text(pet.status)),
                           DataCell(
                             Row(
-                              children: !kIsWeb
+                              children: kIsWeb
                                   ? [
                                       IconButton(
                                         onPressed: () {
